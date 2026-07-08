@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Stock Tracker - Tổ chức quản trị tài sản cộng đồng</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-black text-zinc-100 min-h-screen flex flex-col justify-between font-sans">
+
+    <header class="border-b border-zinc-900 px-6 py-4 flex justify-between items-center max-w-6xl mx-auto w-full">
+        <div class="flex items-center gap-2 font-bold text-xl tracking-tight text-white">
+            <i data-lucide="trending-up" class="text-emerald-500 w-6 h-6"></i> VIBE <span class="text-emerald-500 font-light">TRACKER</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium">Non-Profit Project</span>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto w-full px-6 py-12 grid md:grid-cols-2 gap-12 items-center flex-grow">
+        <div class="space-y-6">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-white">
+                Nền tảng quản trị rủi ro <span class="text-emerald-500 block">Miễn phí cho mọi người.</span>
+            </h1>
+            <p class="text-zinc-400 text-base leading-relaxed">
+                Chúng tôi là một dự án phi lợi nhuận với mục tiêu mang đến cho cộng đồng nhà đầu tư cá nhân công cụ theo dõi danh mục, tính toán Drawdown và quản trị rủi ro theo chuẩn các quỹ đầu tư chuyên nghiệp. Không quảng cáo, không thu phí, bảo mật tuyệt đối.
+            </p>
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-900">
+                <div class="flex items-start gap-2.5">
+                    <i data-lucide="shield-check" class="text-emerald-500 w-5 h-5 mt-0.5"></i>
+                    <div>
+                        <h4 class="text-sm font-semibold text-zinc-200">Mã nguồn mở</h4>
+                        <p class="text-xs text-zinc-500">Minh bạch dữ liệu 100%</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2.5">
+                    <i data-lucide="globe" class="text-emerald-500 w-5 h-5 mt-0.5"></i>
+                    <div>
+                        <h4 class="text-sm font-semibold text-zinc-200">Dữ liệu Real-time</h4>
+                        <p class="text-xs text-zinc-500">Thị trường Mỹ & Việt Nam</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-8 max-w-md w-full mx-auto shadow-xl">
+            <h3 class="text-xl font-bold text-white mb-2">Bắt đầu quản lý tài sản</h3>
+            <p class="text-xs text-zinc-400 mb-6">Đăng nhập để lưu trữ danh mục của bạn đồng bộ trên mọi thiết bị.</p>
+            
+            <form id="auth-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5">Địa chỉ Email</label>
+                    <input type="email" id="auth-email" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-emerald-500/50 transition-all" placeholder="name@organization.org">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5">Mật khẩu</label>
+                    <input type="password" id="auth-password" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-emerald-500/50 transition-all" placeholder="••••••••">
+                </div>
+                <button type="submit" id="btn-login" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black text-sm font-bold py-3 rounded-xl transition-all cursor-pointer flex justify-center items-center gap-2">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Đăng nhập / Đăng ký
+                </button>
+            </form>
+            <div id="auth-msg" class="mt-4 text-center text-xs text-rose-400 font-medium"></div>
+        </div>
+    </main>
+
+    <footer class="border-t border-zinc-900 px-6 py-4 text-center text-xs text-zinc-600 max-w-6xl mx-auto w-full">
+        &copy; 2026 Vibe Stock Tracker. Phát triển vì lợi ích cộng đồng đầu tư.
+    </footer>
+
+    <script>
+        // ĐÃ SỬA: Đổi tên thành biến độc lập 'supabaseClient' và điền khóa của bạn
+        const SUPABASE_URL = "https://asmevcyuutuvywaxqwwx.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzbWV2Y3l1dXR1dnl3YXhxd3d4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjAzMDUsImV4cCI6MjA5OTA5NjMwNX0.A6vNysd6DW3fL53g-5eRH6nuwAxwn-uOvFs-hFjXK1w";
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        lucide.createIcons();
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const msgBox = document.getElementById('auth-msg');
+            msgBox.innerText = "Đang xử lý...";
+            msgBox.className = "mt-4 text-center text-xs text-zinc-400";
+
+            // ĐỒNG BỘ: Sử dụng thực thể supabaseClient mới sửa
+            const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (!signInError) {
+                window.location.href = "dashboard.html"; // Đăng nhập thành công -> Vào thẳng bảng tính tài sản
+                return;
+            }
+
+            // Tự động đăng ký nếu chưa tồn tại tài khoản trên database
+            if (signInError.message.includes("Invalid login credentials") || signInError.message.includes("User not found")) {
+                const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({ email, password });
+                if (!signUpError) {
+                    msgBox.innerText = "Tạo tài khoản thành công! Hãy nhấn nút Đăng nhập một lần nữa để vào hệ thống.";
+                    msgBox.className = "mt-4 text-center text-xs text-emerald-400";
+                    alert("🎉 Đăng ký thành công! Bạn hãy nhấn lại nút Đăng nhập / Đăng ký để chuyển hướng.");
+                } else {
+                    msgBox.innerText = "Lỗi đăng ký: " + signUpError.message;
+                    msgBox.className = "mt-4 text-center text-xs text-rose-400";
+                }
+            } else {
+                msgBox.innerText = "Lỗi: " + signInError.message;
+                msgBox.className = "mt-4 text-center text-xs text-rose-400";
+            }
+        });
+    </script>
+</body>
+</html>

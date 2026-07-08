@@ -1,0 +1,6 @@
+# Chặn thư mục node_modules nằm bên trong thư mục backend
+backend/node_modules/
+
+# Chặn file cấu hình bảo mật (nếu có)
+backend/.env
+.env
