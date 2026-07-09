@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+}
+
+/* Thanh cuộn mượt cho giao diện dark theme */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #09090b; }
+::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
+
+/* Hiệu ứng nhấp nháy cảnh báo rủi ro */
+@keyframes pulse-red { 
+    0%, 100% { background-color: rgba(239, 68, 68, 0.1); } 
+    50% { background-color: rgba(239, 68, 68, 0.3); } 
+}
+
+.risk-alert-active { 
+    animation: pulse-red 2s infinite; 
+    border-color: #ef4444 !important; 
+}
